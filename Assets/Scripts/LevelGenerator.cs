@@ -7,7 +7,8 @@ public class LevelGenerator : MonoBehaviour {
     public const int LOW_GRAS = 1;
     public const int PLAYER = 2;
     public const int TREE   = 3;
-    public const int FLOWER = 4;
+	public const int FLOWER = 4;
+	public const int EMPTY  = 5;
 
     public GameObject prefab_floor;
     public GameObject prefab_player;
@@ -23,9 +24,11 @@ public class LevelGenerator : MonoBehaviour {
     {
         for (int i = 0; i < level.Length; i++){
             for (int j = 0; j < level[i].Length; j++)
-            {
-                Gras g = Instantiate(prefab_floor, new Vector3(i - ((int)(level.Length / 2)), j - ((int)(level[i].Length / 2)), 1), Quaternion.identity).GetComponent<Gras>();
-                g.setPosition(i, j);
+            {	
+				if (level [i] [j] != EMPTY) { 
+					Gras g = Instantiate (prefab_floor, new Vector3 (i - ((int)(level.Length / 2)), j - ((int)(level [i].Length / 2)), 1), Quaternion.identity).GetComponent<Gras> ();
+					g.setPosition (i, j);
+				}
                 switch (level[i][j])
                 {
                     case PLAYER:

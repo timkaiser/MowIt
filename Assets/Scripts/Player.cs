@@ -11,7 +11,7 @@ public class Player : MonoBehaviour {
     private Button button_up, button_down, button_left, button_right;
     public Button prefab_button;
     private GameObject ui_canvas;
-    private const int buttonsize = 92;
+    float buttonsize = 92;
     private Transform transform;
     
     // Use this for initialization
@@ -22,16 +22,25 @@ public class Player : MonoBehaviour {
         ui_canvas = GameObject.FindWithTag("canvas");
         button_up = Instantiate(prefab_button);
         button_up.transform.parent = ui_canvas.transform;
+		button_up.GetComponentInChildren<Text> ().text = "UP";
         button_up.onClick.AddListener(up);
         button_down = Instantiate(prefab_button);
-        button_down.transform.parent = ui_canvas.transform;
+		button_down.transform.parent = ui_canvas.transform;
+		button_down.GetComponentInChildren<Text> ().text = "DOWN";
         button_down.onClick.AddListener(down);
         button_left = Instantiate(prefab_button);
-        button_left.transform.parent = ui_canvas.transform;
+		button_left.transform.parent = ui_canvas.transform;
+		button_left.GetComponentInChildren<Text> ().text = "LEFT";
         button_left.onClick.AddListener(left);
         button_right = Instantiate(prefab_button);
-        button_right.transform.parent = ui_canvas.transform;
+		button_right.transform.parent = ui_canvas.transform;
+		button_right.GetComponentInChildren<Text> ().text = "RIGHT";
         button_right.onClick.AddListener(right);
+
+		if (!isFree(x, y + 1)) { button_up.gameObject.SetActive(false); }
+		if (!isFree(x, y - 1)) { button_down.gameObject.SetActive(false); }
+		if (!isFree(x - 1, y)) { button_left.gameObject.SetActive(false); }
+		if (!isFree(x + 1, y)) { button_right.gameObject.SetActive(false); }
     }
 	
 	// Update is called once per frame
@@ -60,10 +69,21 @@ public class Player : MonoBehaviour {
             if (isFree(x - 1, y)) { button_left.gameObject.SetActive(true); }
             if (isFree(x + 1, y)) { button_right.gameObject.SetActive(true); }
         }
-        button_up.transform.position = new Vector3(x * buttonsize + ui_canvas.transform.position.x, y * buttonsize + ui_canvas.transform.position.y + buttonsize, 0);
-        button_down.transform.position = new Vector3(x * buttonsize + ui_canvas.transform.position.x, y * buttonsize + ui_canvas.transform.position.y - buttonsize, 0);
-        button_left.transform.position = new Vector3(x * buttonsize + ui_canvas.transform.position.x - buttonsize, y * buttonsize + ui_canvas.transform.position.y, 0);
-        button_right.transform.position = new Vector3(x * buttonsize + ui_canvas.transform.position.x + buttonsize, y * buttonsize + ui_canvas.transform.position.y, 0);
+
+
+		buttonsize = (Screen.height / 1000f);
+
+
+		button_up.transform.localScale = new Vector3 (buttonsize,buttonsize, 1);
+		button_down.transform.localScale = new Vector3 (buttonsize,buttonsize, 1);
+		button_left.transform.localScale = new Vector3 (buttonsize,buttonsize, 1);
+		button_right.transform.localScale = new Vector3 (buttonsize,buttonsize, 1);
+
+
+		button_up.transform.position = new Vector3(x * buttonsize * 100  + ui_canvas.transform.position.x, y * buttonsize * 100 + ui_canvas.transform.position.y + buttonsize * 100, 0);
+		button_down.transform.position = new Vector3(x * buttonsize * 100 + ui_canvas.transform.position.x, y * buttonsize * 100 + ui_canvas.transform.position.y - buttonsize * 100, 0);
+		button_left.transform.position = new Vector3(x * buttonsize * 100 + ui_canvas.transform.position.x - buttonsize * 100, y * buttonsize * 100  + ui_canvas.transform.position.y, 0);
+		button_right.transform.position = new Vector3(x * buttonsize * 100 + ui_canvas.transform.position.x + buttonsize * 100, y * buttonsize * 100 + ui_canvas.transform.position.y, 0);
 
         if (GlobalVariables.get().isMowed())
         {
@@ -76,7 +96,8 @@ public class Player : MonoBehaviour {
         x = x + (int)(GlobalVariables.get().level.Length / 2);
         y = y + (int)(GlobalVariables.get().level[0].Length / 2);
         return !(x<0 || y<0 || x>= GlobalVariables.get().level.Length || y >= GlobalVariables.get().level[0].Length) &&
-            GlobalVariables.get().level[x][y] != LevelGenerator.TREE;
+			GlobalVariables.get().level[x][y] != LevelGenerator.TREE &&
+			GlobalVariables.get().level[x][y] != LevelGenerator.EMPTY;
     }
 
     public void move(int h, int v)

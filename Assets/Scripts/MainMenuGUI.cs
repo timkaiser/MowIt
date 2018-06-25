@@ -28,7 +28,7 @@ public class MainMenuGUI : MonoBehaviour
             if(GUI.Button(new Rect(Screen.width /2 - Screen.width/6, Screen.height/5 + 2 * Screen.height / 10, Screen.width/3, Screen.height/10), "Play", btnStyle))
 
             {
-                SceneManager.LoadScene("Level", LoadSceneMode.Single);
+                SceneManager.LoadScene("LevelMenu", LoadSceneMode.Single);
             }          
             
             // "Quit game" button

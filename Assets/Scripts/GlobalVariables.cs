@@ -9,17 +9,19 @@ public class GlobalVariables : MonoBehaviour {
     private void Start()
     {
         get();
+		DontDestroyOnLoad (this.gameObject);
     }
 
     private void Setup () {
         instance = this;
+		if(level == null){
         level = new int[5][]; // up -->
-        int[] level0 = { 0, 0, 0, 0, 0 }; level[0] = level0;
-        int[] level1 = { 0, 0, 0, 0, 0 }; level[1] = level1;
-        int[] level2 = { 0, 0, 2, 0, 0 }; level[2] = level2;
-        int[] level3 = { 0, 0, 0, 0, 3 }; level[3] = level3;
-        int[] level4 = { 0, 0, 3, 0, 0 }; level[4] = level4;
-        
+	        int[] level0 = { 5, 5, 0, 0, 0 }; level[0] = level0;
+	        int[] level1 = { 5, 5, 0, 0, 0 }; level[1] = level1;
+	        int[] level2 = { 0, 0, 2, 0, 0 }; level[2] = level2;
+	        int[] level3 = { 0, 0, 0, 0, 3 }; level[3] = level3;
+	        int[] level4 = { 0, 0, 3, 0, 0 }; level[4] = level4;
+		}   
     }
 
     private void Update()
@@ -60,5 +62,9 @@ public class GlobalVariables : MonoBehaviour {
             level[x][y] = LevelGenerator.LOW_GRAS;
         }
     }
+
+	public void setLevel(int[][] lvl){
+		level = lvl;
+	}
 
 }
