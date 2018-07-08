@@ -2,42 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GlobalVariables : MonoBehaviour {
-    private static GlobalVariables instance;
-    public int[][] level;
-    // Use this for initialization
-    private void Start()
+public class GlobalVariables : MonoBehaviour{
+    public static bool Mute {
+        get; set;
+    }
+
+    private static int[][] level = new int[0][];
+    public static int[][] Level {
+        get { return level; }
+        set { level = value; }
+    }
+
+    private static int roundCounter = 0;
+    public static int RoundCounter
     {
-        get();
-		DontDestroyOnLoad (this.gameObject);
+        get { return roundCounter;  }
+        set { roundCounter = value; }
     }
 
-    private void Setup () {
-        instance = this;
-		if(level == null){
-        level = new int[5][]; // up -->
-	        int[] level0 = { 5, 5, 0, 0, 0 }; level[0] = level0;
-	        int[] level1 = { 5, 5, 0, 0, 0 }; level[1] = level1;
-	        int[] level2 = { 0, 0, 2, 0, 0 }; level[2] = level2;
-	        int[] level3 = { 0, 0, 0, 0, 3 }; level[3] = level3;
-	        int[] level4 = { 0, 0, 3, 0, 0 }; level[4] = level4;
-		}   
-    }
 
-    private void Update()
-    {
-    }
-
-    public static GlobalVariables get()
-    {
-        if (instance == null) {
-            instance = GameObject.FindObjectOfType<GlobalVariables>();
-            instance.Setup();
-        }
-        return instance;
-    }
-
-    public bool isMowed()
+    public static bool isMowed()
     {
         bool result = true;
         for (int i = 0; i < level.Length; i++)
@@ -50,12 +34,12 @@ public class GlobalVariables : MonoBehaviour {
         return result;
     }
 
-    public bool isMowed(int x, int y)
+    public static bool isMowed(int x, int y)
     {
                 return level[x][y] != LevelGenerator.HIGH_GRAS;           
     }
 
-    public void setMowed(int x, int y)
+    public static void setMowed(int x, int y)
     {
         if (level[x][y] == LevelGenerator.HIGH_GRAS)
         {
@@ -63,8 +47,10 @@ public class GlobalVariables : MonoBehaviour {
         }
     }
 
-	public void setLevel(int[][] lvl){
-		level = lvl;
-	}
+    public static void reset()
+    {
+        level = null;
+        RoundCounter = 0;
+    }
 
 }

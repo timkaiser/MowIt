@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: c784f257160a1d7409bef1e73209d125
+timeCreated: 1531034372
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: MostlyMono
+  fontNames:
+  - MostlyMono
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
