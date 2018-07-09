@@ -8,21 +8,30 @@ public class Player : MonoBehaviour {
 
     public int x, y, rotation;
 
+    //Gamestate
+    private short gamestate = RUNNING;
+    private const int RUNNING = 0;
+    private const int WON = 1;
+    private const int LOST = 2;
+    
     //UI
     private Button button_up, button_down, button_left, button_right;
     public Button prefab_button;
     private GameObject ui_canvas;
     float buttonsize = 92;
-    //private Transform transform;
     private float scale = 1;
+    public GameObject winoverlay;
+
 
     private AudioSource soundeffect;
     
     // Use this for initialization
     void Start () {
-        //transform = this.gameObject.transform;
         soundeffect = this.GetComponentInChildren<AudioSource>();
         //UI
+        winoverlay = Instantiate((GameObject)Resources.Load("Prefabs/UI/WinOverlay"));
+        winoverlay.SetActive(false);
+
         ui_canvas = GameObject.FindWithTag("canvas");
 
         button_up = Instantiate(prefab_button);
@@ -68,71 +77,73 @@ public class Player : MonoBehaviour {
     }
 
 	// Update is called once per frame
-	void FixedUpdate ()
-    {
+	void FixedUpdate () {
+        //winscreen
+        winoverlay.SetActive(gamestate == WON);
 
-        scale = (scale == 1) ? 1.02f : 1;
-        transform.localScale = new Vector3(scale, scale, 1);
+        //main game
+        switch (gamestate) {
+            case RUNNING:
+                scale = (scale == 1) ? 1.02f : 1;
+                transform.localScale = new Vector3(scale, scale, 1);
 
-        if (transform.position.x != x || transform.position.y != y)
-        {
-            soundeffect.volume = 0.3f;
+                if (transform.position.x != x || transform.position.y != y) {
+                    soundeffect.volume = 0.3f;
 
-            button_up.gameObject.SetActive(false);
-            button_down.gameObject.SetActive(false);
-            button_left.gameObject.SetActive(false);
-            button_right.gameObject.SetActive(false);
+                    button_up.gameObject.SetActive(false);
+                    button_down.gameObject.SetActive(false);
+                    button_left.gameObject.SetActive(false);
+                    button_right.gameObject.SetActive(false);
 
-            //xCurrent =
-            //transform.position = new Vector3(xCurrent, yCurrent, 0);
-            float xDif = 0.1f * ((x - transform.position.x) < 0 ? -1 : (x - transform.position.x) == 0 ? 0 : 1);
-            float yDif = 0.1f * ((y - transform.position.y) < 0 ? -1 : (y - transform.position.y) == 0 ? 0 : 1);
-            float xNew = Mathf.Round((transform.position.x + xDif) * 1000) / 1000f;
-            float yNew = Mathf.Round((transform.position.y + yDif) * 1000) / 1000f;
-            transform.position = new Vector3(xNew, yNew, 0);
-            GlobalVariables.setMowed((int)xNew + (int)(GlobalVariables.Level.Length / 2), (int)yNew + (int)(GlobalVariables.Level[0].Length / 2));
-        }
-        else
-        {
-            //Keyboard Control
-            if (Input.GetKeyDown(KeyCode.LeftArrow)) {             
-                left();
-            } else if (Input.GetKeyDown(KeyCode.RightArrow)) {
-                right();
-            } else if (Input.GetKeyDown(KeyCode.UpArrow)) {
-                up();
-            } else if (Input.GetKeyDown(KeyCode.DownArrow)) {
-                down();
-            }
+                    //xCurrent =
+                    //transform.position = new Vector3(xCurrent, yCurrent, 0);
+                    float xDif = 0.1f * ((x - transform.position.x) < 0 ? -1 : (x - transform.position.x) == 0 ? 0 : 1);
+                    float yDif = 0.1f * ((y - transform.position.y) < 0 ? -1 : (y - transform.position.y) == 0 ? 0 : 1);
+                    float xNew = Mathf.Round((transform.position.x + xDif) * 1000) / 1000f;
+                    float yNew = Mathf.Round((transform.position.y + yDif) * 1000) / 1000f;
+                    transform.position = new Vector3(xNew, yNew, 0);
+                    GlobalVariables.setMowed((int)xNew + (int)(GlobalVariables.Level.Length / 2), (int)yNew + (int)(GlobalVariables.Level[0].Length / 2));
+                } else {
+                    //Keyboard Control
+                    if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+                        left();
+                    } else if (Input.GetKeyDown(KeyCode.RightArrow)) {
+                        right();
+                    } else if (Input.GetKeyDown(KeyCode.UpArrow)) {
+                        up();
+                    } else if (Input.GetKeyDown(KeyCode.DownArrow)) {
+                        down();
+                    }
 
-            soundeffect.volume = 0.1f;
+                    soundeffect.volume = 0.1f;
 
-            if (isFree(x - 1, y)) { button_left.gameObject.SetActive(true); }
-            if (isFree(x + 1, y)) { button_right.gameObject.SetActive(true); }
-            if (isFree(x, y - 1)) { button_down.gameObject.SetActive(true); }
-            if (isFree(x, y + 1)) {button_up.gameObject.SetActive(true); }
-        }
+                    if (isFree(x - 1, y)) { button_left.gameObject.SetActive(true); }
+                    if (isFree(x + 1, y)) { button_right.gameObject.SetActive(true); }
+                    if (isFree(x, y - 1)) { button_down.gameObject.SetActive(true); }
+                    if (isFree(x, y + 1)) { button_up.gameObject.SetActive(true); }
+                }
 
-        soundeffect.mute = GlobalVariables.Mute;
-
-
-        buttonsize = (Screen.height / 1000f);
+                soundeffect.mute = GlobalVariables.Mute;
 
 
-		button_up.transform.localScale = new Vector3 (buttonsize,buttonsize, 1);
-		button_down.transform.localScale = new Vector3 (buttonsize,buttonsize, 1);
-		button_left.transform.localScale = new Vector3 (buttonsize,buttonsize, 1);
-		button_right.transform.localScale = new Vector3 (buttonsize,buttonsize, 1);
+                buttonsize = (Screen.height / 1000f);
 
 
-		button_up.transform.position = new Vector3(x * buttonsize * 100  + ui_canvas.transform.position.x, y * buttonsize * 100 + ui_canvas.transform.position.y + buttonsize * 100, 0);
-		button_down.transform.position = new Vector3(x * buttonsize * 100 + ui_canvas.transform.position.x, y * buttonsize * 100 + ui_canvas.transform.position.y - buttonsize * 100, 0);
-		button_left.transform.position = new Vector3(x * buttonsize * 100 + ui_canvas.transform.position.x - buttonsize * 100, y * buttonsize * 100  + ui_canvas.transform.position.y, 0);
-		button_right.transform.position = new Vector3(x * buttonsize * 100 + ui_canvas.transform.position.x + buttonsize * 100, y * buttonsize * 100 + ui_canvas.transform.position.y, 0);
+                button_up.transform.localScale = new Vector3(buttonsize, buttonsize, 1);
+                button_down.transform.localScale = new Vector3(buttonsize, buttonsize, 1);
+                button_left.transform.localScale = new Vector3(buttonsize, buttonsize, 1);
+                button_right.transform.localScale = new Vector3(buttonsize, buttonsize, 1);
 
-        if (GlobalVariables.isMowed())
-        {
-            SceneManager.LoadScene("WinScreen", LoadSceneMode.Single);
+
+                button_up.transform.position = new Vector3(x * buttonsize * 100 + ui_canvas.transform.position.x, y * buttonsize * 100 + ui_canvas.transform.position.y + buttonsize * 100, 0);
+                button_down.transform.position = new Vector3(x * buttonsize * 100 + ui_canvas.transform.position.x, y * buttonsize * 100 + ui_canvas.transform.position.y - buttonsize * 100, 0);
+                button_left.transform.position = new Vector3(x * buttonsize * 100 + ui_canvas.transform.position.x - buttonsize * 100, y * buttonsize * 100 + ui_canvas.transform.position.y, 0);
+                button_right.transform.position = new Vector3(x * buttonsize * 100 + ui_canvas.transform.position.x + buttonsize * 100, y * buttonsize * 100 + ui_canvas.transform.position.y, 0);
+
+                if (GlobalVariables.isMowed()) {
+                    gamestate = WON;
+                }
+                break;
         }
 
     }
@@ -155,23 +166,19 @@ public class Player : MonoBehaviour {
         }
     }
     
-    private void up()
-    {
+    private void up(){
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
         move(0, 1);
     }
-    private void down()
-    {
+    private void down(){
         transform.rotation = Quaternion.Euler(new Vector3(0, 180, 180));
         move(0, -1);
     }
-    private void left()
-    {
+    private void left(){
         transform.rotation = Quaternion.Euler(new Vector3(0, 180, 270));
         move(-1, 0);
     }
-    private void right()
-    {
+    private void right(){
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, 270));
         move(1, 0);
     }

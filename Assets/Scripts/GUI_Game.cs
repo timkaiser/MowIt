@@ -14,8 +14,8 @@ public class GUI_Game : MonoBehaviour
         //Back Button
         GUI.backgroundColor = Color.clear;
         int buttonsize = (int)Mathf.Max(Screen.height / 10, Screen.width / 10);
-        if (GUI.Button(new Rect(0, 0, buttonsize, buttonsize), (Texture)Resources.Load("Sprites/Arrow_back"), GUI_MainMenu.BtnStyle_Back)) {
-            SceneManager.LoadScene("LevelMenu", LoadSceneMode.Single);
+        if (GUI.Button(new Rect(0, 0, buttonsize, buttonsize), (Texture)Resources.Load("Sprites/Arrow_back"))) {
+            back();
         }
 
     }
@@ -23,11 +23,17 @@ public class GUI_Game : MonoBehaviour
     private void Update(){
         //roundcounter.fontSize = 10;
         if (Input.GetKey(KeyCode.Escape)) {
-            SceneManager.LoadScene("LevelMenu", LoadSceneMode.Single);
+            back();
         }
 
         if (roundcounter != null){
             roundcounter.text = "" + GlobalVariables.RoundCounter;
         }
+    }
+
+    //back to mainmenu
+    public void back() {
+        Instantiate((GameObject)Resources.Load("Prefabs/UI/LoadingOverlay"));
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 }
