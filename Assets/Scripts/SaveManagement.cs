@@ -27,7 +27,6 @@ public class SaveManagement : MonoBehaviour {
 
     //saves settings
     public static void SaveSettings() {
-        Debug.Log(Application.persistentDataPath);
         Settings data = new Settings(GlobalVariables.language, GlobalVariables.isMuted);
     
         string destination = Application.persistentDataPath + "/settings.dat";

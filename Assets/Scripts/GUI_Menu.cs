@@ -114,7 +114,8 @@ public class GUI_Menu : MonoBehaviour {
                         GUI.backgroundColor = new Color(1, 0, 0, 0.5f);
                         GUI.contentColor = new Color(1, 1, 1, 1);
                         //unlocked
-                    } else if (i == 0 || (GlobalVariables.UnlockedLevels[i-1] > 0) || (i>1 && GlobalVariables.UnlockedLevels[i - 2] > 0) || (i > 3 && GlobalVariables.UnlockedLevels[i - 3] > 0)) { 
+                    } else if (i == 0 || (GlobalVariables.UnlockedLevels[i - 1] > 0)) {
+                    //} else if (i == 0 || (GlobalVariables.UnlockedLevels[i-1] > 0) || (i>1 && GlobalVariables.UnlockedLevels[i - 2] > 0) || (i > 3 && GlobalVariables.UnlockedLevels[i - 3] > 0)) { 
                         GUI.backgroundColor = Color.white;
                         GUI.contentColor = new Color(0, 0, 0, 1);
                         //locked
